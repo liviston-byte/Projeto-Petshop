@@ -239,7 +239,7 @@ while True:
                             else:
                                 print('\nServiços disponíveis: ')
                                 for indice in range(len(servicos)):
-                                    print(f'{indice} - Serviço: {servicos[indice][0]} | Preço: R${servicos[indice][1]}')
+                                    print(f'{indice} - Serviço: {servicos[indice][0]} | Preço: R${servicos[indice][1]:.2f}')
 
                                 indice = int(input('Digite o código do serviço que deseja agendar: '))
                                 if 0 <= indice < len(servicos):
@@ -249,20 +249,14 @@ while True:
                                         print('\nHorários disponíveis: ')
                                         for h_indice in range(len(horarios)):
                                             print(f'{h_indice} - Horário: {horarios[h_indice][0]}')
-
+                                        
                                         h_indice = int(input('Digite o código do horário desejado: '))
                                         if 0 <= h_indice < len(horarios):
                                             horario_escolhido = horarios[h_indice][0]
-
-                                            count_agendamentos = sum(1 for ag in agendapet if ag[3] == horario_escolhido)
-                                            if count_agendamentos >= 3:
-                                                print('Limite de 3 agendamentos por horário atingido. Escolha outro horário.')
-                                            else:
-                                                print(f'Agendamento realizado! Serviço: {servicos[indice][0]}, Preço: R${servicos[indice][1]}, Horário: {horario_escolhido}')
-                                                agendapet.append([usuario, servicos[indice][0], servicos[indice][1], horario_escolhido])
+                                            print(f'Agendamento realizado! Serviço: {servicos[indice][0]}, Preço: R${servicos[indice][1]:.2f}, Horário: {horario_escolhido}')
+                                            agendapet.append([usuario, servicos[indice][0], servicos[indice][1], horario_escolhido])
                                         else:
                                             print('Código de horário inválido.')
-
                                 else:
                                     print('Código inválido.')
 
