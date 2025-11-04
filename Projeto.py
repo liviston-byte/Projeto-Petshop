@@ -1,9 +1,9 @@
-servicos = [['Banho', 25.0]]
-produtos = [['Ração', 10.0, 20]]
+servicos = [['Banho', 25.0], ['Tosa', 30.0], ['Cirurgia', 300.0]]
+produtos = [['Ração', 10.0, 20], ['Brinquedo', 5.0, 10], ['Vacina', 25.0, 15]]
 horarios = [['15:00']]
 agendapet = []
 compras = []
-usuarios = [['adm', 'adm123', 'junior', '123']]
+usuarios = [['adm', 'adm123'], ['junior', '123']]
 
 while True:
     opcao = input('\nBem-vindo ao SertãoPet\n\n1 - Cadastrar-se\n2 - Login\n0 - Sair\n\nDigite sua opção: ')
@@ -58,8 +58,9 @@ while True:
                         print('6 - Alterar serviço')
                         print('7 - Remover produto')
                         print('8 - Remover serviço')
-                        print('9 - Procurar Produto')
-                        print('10 - Procurar Serviços')
+                        print('9 - Procurar produto')
+                        print('10 - Procurar serviços')
+                        print('11 - Relatório de vendas')
                         print('0 - Sair')
                         escolha = input('Digite sua opção: ')
 
@@ -175,6 +176,25 @@ while True:
                             if not encontrado:
                                 print('Serviço não encontrado')
 
+                        elif escolha == '11':
+                            total_vendas_produtos = 0.0
+                            total_vendas_servicos = 0.0
+
+                            print('\n----- Relatório de vendas -----')
+                            if not compras:
+                                print('Nenhuma venda registrada.')
+                            else:
+                                for compra in compras:
+                                    valor_total_item = compra[3]
+                                    total_vendas_produtos += valor_total_item
+                                    print(f'Produto: {compra[1]} | Quantidade: {compra[2]} | Total: R${valor_total_item:.2f} | Cliente: {compra[0]}')
+                                print(f'\nTotal Arrecadado (Produtos): R${total_vendas_produtos:.2f}')
+
+                            total_geral = total_vendas_produtos + total_vendas_servicos
+                            print('\n----------------------------------------------')
+                            print(f'Total geral de vendas: R${total_geral:.2f}')
+                            print('----------------------------------------------')
+
                         elif escolha == '0':
                             print('Saindo...')
                             break
@@ -207,6 +227,7 @@ while True:
                                         produtos[indice][2] -= quantidade
                                         total = quantidade * produtos[indice][1]
                                         print(f'Compra realizada! Produto: {produtos[indice][0]}, Quantidade: {quantidade}, Total: R${total:.2f}')
+                                        compras.append([usuario, produtos[indice][0], quantidade, total])
                                     else:
                                         print('Quantidade insuficiente em estoque.')
                                 else:
@@ -222,11 +243,28 @@ while True:
 
                                 indice = int(input('Digite o código do serviço que deseja agendar: '))
                                 if 0 <= indice < len(servicos):
-                                    print(f'Agendamento realizado! Serviço: {servicos[indice][0]}, Preço: R${servicos[indice][1]}')
-                                    agendapet.append([usuario, servicos[indice][0], servicos[indice][1]])
-                                    compras.append([usuario, produtos[indice][0], quantidade, total])
+                                    if not horarios:
+                                        print('Nenhum horário disponível.')
+                                    else:
+                                        print('\nHorários disponíveis: ')
+                                        for h_indice in range(len(horarios)):
+                                            print(f'{h_indice} - Horário: {horarios[h_indice][0]}')
+
+                                        h_indice = int(input('Digite o código do horário desejado: '))
+                                        if 0 <= h_indice < len(horarios):
+                                            horario_escolhido = horarios[h_indice][0]
+
+                                            count_agendamentos = sum(1 for ag in agendapet if ag[3] == horario_escolhido)
+                                            if count_agendamentos >= 3:
+                                                print('Limite de 3 agendamentos por horário atingido. Escolha outro horário.')
+                                            else:
+                                                print(f'Agendamento realizado! Serviço: {servicos[indice][0]}, Preço: R${servicos[indice][1]}, Horário: {horario_escolhido}')
+                                                agendapet.append([usuario, servicos[indice][0], servicos[indice][1], horario_escolhido])
+                                        else:
+                                            print('Código de horário inválido.')
+
                                 else:
-                                        print('Código inválido.')
+                                    print('Código inválido.')
 
                         elif escolha == '3':
                             print('Agendamentos do meu pet')
@@ -258,4 +296,3 @@ while True:
 
     else:
         print('Opção inválida, tente novamente.')
-        
